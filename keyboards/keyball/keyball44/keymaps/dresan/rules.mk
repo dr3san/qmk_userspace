@@ -1,0 +1,9 @@
+OLED_ENABLE = yes
+
+SRC += oneshot.c
+SRC += swapper.c
+
+SPLIT_KEYBOARD = yes
+CAPS_WORD_ENABLE = yes
+REPEAT_KEY_ENABLE = yes
+UNICODEMAP_ENABLE = yes
