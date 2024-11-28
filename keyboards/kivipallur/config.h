@@ -8,13 +8,21 @@
  *  These options are also useful to firmware size reduction.
  */
 
-/* disable debug print */
-//#define NO_DEBUG
+#define SERIAL_USART_TX_PIN GP0
+#define PMW33XX_CS_PIN GP21
+#define SPLIT_POINTING_ENABLE
+#define POINTING_DEVICE_RIGHT
 
-/* disable print */
-//#define NO_PRINT
+#define SPI_DRIVER SPID0
+#define SPI_SCK_PIN GP22
+#define SPI_MISO_PIN GP20
+#define SPI_MOSI_PIN GP23
+#define POINTING_DEVICE_ROTATION_90
+#define PMW33XX_CPI 400
+#define POINTING_DEVICE_INVERT_X
 
-/* disable action features */
-//#define NO_ACTION_LAYER
-//#define NO_ACTION_TAPPING
-//#define NO_ACTION_ONESHOT
+#define SPLIT_USB_DETECT
+
+#define CAPS_WORD_IDLE_TIMEOUT 0
+
+#define UNICODE_SELECTED_MODES UNICODE_MODE_LINUX
