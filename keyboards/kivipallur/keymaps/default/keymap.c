@@ -7,8 +7,8 @@
 
 // === BEGIN KEYMAP MACROS ===
 #define MO_NAV MO(_NAV)
-#define MO_EST MO(_EST)
-#define MO_SYMNM MO(_SYMNUM)
+#define MO_SYM MO(_SYM)
+#define MO_NUM MO(_NUM)
 
 #define BACK A(KC_LEFT)
 #define FWD A(KC_RGHT)
@@ -26,8 +26,8 @@
 enum layers {
     _ALPHA = 0,
     _NAV,
-    _SYMNUM,
-    _EST,
+    _SYM,
+    _NUM,
 };
 
 bool set_scrolling = false;
@@ -67,10 +67,8 @@ enum keycodes {
     OS_CTRL,
     OS_ALT,
     OS_GUI,
-
     SW_WIN,  // Switch to next window         (alt-tab)
-
-    MO_SCRL,
+    MO_SCRL, // Toggle drag scrolling
 };
 
 // clang-format off
@@ -79,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,     KC_Q,       KC_W,       KC_F,       KC_P,       KC_B,           KC_J,       KC_L,       KC_U,       KC_Y,       KC_QUOT,    KC_MINS,
 	                KC_A,       KC_R,       KC_S,       KC_T,       KC_G,           KC_M,       KC_N,       KC_E,       KC_I,       KC_O,
         KC_ESC,     KC_Z,       KC_X,       KC_C,       KC_D,       KC_V,           KC_K,       KC_H,       KC_COMM,    KC_DOT,     KC_SLSH,    KC_QUES,
-                                                        MO_NAV,     KC_LSFT,        MO_EST,     KC_SPC
+                                                        MO_NAV,     KC_LSFT,        MO_SYM,     KC_SPC
     ),
     [_NAV] = LAYOUT_split_3x6_3(
         XXXXXXX,    XXXXXXX,    PG_LEFT,    PG_RGHT,    BACK,       FWD,            KC_PGUP,    KC_HOME,    KC_UP,      KC_END,     XXXXXXX,    XXXXXXX,
@@ -87,23 +85,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         SAVE,       UNDO,       REDO,       CUT,        COPY,       PASTE,          SW_WIN,     MS_BTN1,    MS_BTN2,    MO_SCRL,    KC_DEL,     XXXXXXX,
                                                         _______,    XXXXXXX,        XXXXXXX,    KC_ENT
     ),
-    [_EST] = LAYOUT_split_3x6_3(
-        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
-	                XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    EST_A,      EST_O_2,    EST_U,      KC_BSPC,
-        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    EST_O_1,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
-                                                        MO_SYMNM,   KC_LSFT,        _______,    XXXXXXX
+    [_SYM] = LAYOUT_split_3x6_3(
+        KC_TILD,    KC_CIRC,    KC_DLR,     KC_PERC,    KC_HASH,    KC_AMPR,        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
+	                KC_LABK,    KC_LBRC,    KC_LCBR,    KC_LPRN,    KC_EQL,         KC_PIPE,    EST_A,      EST_O_2,    EST_U,      KC_BSPC,
+        KC_PLUS,    KC_RABK,    KC_RBRC,    KC_RCBR,    KC_RPRN,    KC_ASTR,        KC_GRV,     EST_O_1,    KC_AT,      XXXXXXX,    XXXXXXX,    XXXXXXX,
+                                                        MO_NUM,     KC_LSFT,        _______,    XXXXXXX
     ),
-    [_SYMNUM] = LAYOUT_split_3x6_3(
-        KC_TILD,    KC_LABK,    KC_LBRC,    KC_LCBR,    KC_LPRN,    KC_HASH,        KC_AMPR,    KC_7,       KC_8,        KC_9,       XXXXXXX,    KC_AT,
+    [_NUM] = LAYOUT_split_3x6_3(
+        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_7,       KC_8,        KC_9,       XXXXXXX,    KC_F11,
                     OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_EQL,         KC_0,       KC_4,       KC_5,        KC_6,       KC_BSPC,
-        XXXXXXX,    KC_CIRC,    KC_PERC,    KC_PIPE,    KC_GRV,     KC_PLUS,        KC_ASTR,    KC_1,       KC_2,        KC_3,       KC_DLR,     XXXXXXX,
+        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_1,       KC_2,        KC_3,       XXXXXXX,    KC_F12,
                                                         _______,    XXXXXXX,        XXXXXXX,    XXXXXXX
     ),
 };
 // clang-format on
 
 // === BEGIN ONESHOT ===
-bool sw_win_active  = false;
+bool sw_win_active = false;
 
 bool is_oneshot_cancel_key(uint16_t keycode) {
     switch (keycode) {
@@ -117,12 +115,13 @@ bool is_oneshot_cancel_key(uint16_t keycode) {
 
 bool is_oneshot_ignored_key(uint16_t keycode) {
     switch (keycode) {
-        case MO_NAV:
         case OS_GUI:
         case OS_ALT:
         case OS_SHFT:
         case OS_CTRL:
-        case MO_SYMNM:
+        case MO_NAV:
+        case MO_SYM:
+        case MO_NUM:
             return true;
         default:
             return false;
@@ -150,7 +149,7 @@ float scroll_accumulated = 0;
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     if (set_scrolling) {
-        scroll_accumulated += (float)mouse_report.y / 8.0;
+        scroll_accumulated += (float)mouse_report.y / 16.0;
         mouse_report.v = (int8_t)scroll_accumulated;
         scroll_accumulated -= (int8_t)scroll_accumulated;
 
@@ -167,34 +166,22 @@ const key_override_t comma_semicolon_override = ko_make_basic(MOD_MASK_SHIFT, KC
 const key_override_t dot_colon_override       = ko_make_basic(MOD_MASK_SHIFT, KC_DOT, KC_COLN);
 const key_override_t slsh_bslsh_override      = ko_make_basic(MOD_MASK_SHIFT, KC_SLSH, KC_BSLS);
 const key_override_t quest_exclm_override     = ko_make_basic(MOD_MASK_SHIFT, KC_QUES, KC_EXLM);
-const key_override_t parenthesis_override =
-    ko_make_basic(MOD_MASK_SHIFT, KC_LEFT_PAREN, KC_RIGHT_PAREN);
-const key_override_t curly_brace_override =
-    ko_make_basic(MOD_MASK_SHIFT, KC_LEFT_CURLY_BRACE, KC_RIGHT_CURLY_BRACE);
-const key_override_t bracket_override =
-    ko_make_basic(MOD_MASK_SHIFT, KC_LEFT_BRACKET, KC_RIGHT_BRACKET);
-const key_override_t angle_bracket_override =
-    ko_make_basic(MOD_MASK_SHIFT, KC_LEFT_ANGLE_BRACKET, KC_RIGHT_ANGLE_BRACKET);
-
-const key_override_t n1_f01_override   = ko_make_basic(MOD_MASK_SHIFT, KC_1, KC_F1);
-const key_override_t n2_f02_override   = ko_make_basic(MOD_MASK_SHIFT, KC_2, KC_F2);
-const key_override_t n3_f03_override   = ko_make_basic(MOD_MASK_SHIFT, KC_3, KC_F3);
-const key_override_t n4_f04_override   = ko_make_basic(MOD_MASK_SHIFT, KC_4, KC_F4);
-const key_override_t n5_f05_override   = ko_make_basic(MOD_MASK_SHIFT, KC_5, KC_F5);
-const key_override_t n6_f06_override   = ko_make_basic(MOD_MASK_SHIFT, KC_6, KC_F6);
-const key_override_t n7_f07_override   = ko_make_basic(MOD_MASK_SHIFT, KC_7, KC_F7);
-const key_override_t n8_f08_override   = ko_make_basic(MOD_MASK_SHIFT, KC_8, KC_F8);
-const key_override_t n9_f09_override   = ko_make_basic(MOD_MASK_SHIFT, KC_9, KC_F9);
-const key_override_t n0_f10_override   = ko_make_basic(MOD_MASK_SHIFT, KC_0, KC_F10);
-const key_override_t ampr_f11_override = ko_make_basic(MOD_MASK_SHIFT, KC_AMPR, KC_F11);
-const key_override_t astr_f12_override = ko_make_basic(MOD_MASK_SHIFT, KC_ASTR, KC_F12);
+const key_override_t n1_f01_override          = ko_make_basic(MOD_MASK_SHIFT, KC_1, KC_F1);
+const key_override_t n2_f02_override          = ko_make_basic(MOD_MASK_SHIFT, KC_2, KC_F2);
+const key_override_t n3_f03_override          = ko_make_basic(MOD_MASK_SHIFT, KC_3, KC_F3);
+const key_override_t n4_f04_override          = ko_make_basic(MOD_MASK_SHIFT, KC_4, KC_F4);
+const key_override_t n5_f05_override          = ko_make_basic(MOD_MASK_SHIFT, KC_5, KC_F5);
+const key_override_t n6_f06_override          = ko_make_basic(MOD_MASK_SHIFT, KC_6, KC_F6);
+const key_override_t n7_f07_override          = ko_make_basic(MOD_MASK_SHIFT, KC_7, KC_F7);
+const key_override_t n8_f08_override          = ko_make_basic(MOD_MASK_SHIFT, KC_8, KC_F8);
+const key_override_t n9_f09_override          = ko_make_basic(MOD_MASK_SHIFT, KC_9, KC_F9);
+const key_override_t n0_f10_override          = ko_make_basic(MOD_MASK_SHIFT, KC_0, KC_F10);
 
 const key_override_t *key_overrides[] = {
-    &comma_semicolon_override, &dot_colon_override,   &slsh_bslsh_override, &quest_exclm_override,
-    &parenthesis_override,     &curly_brace_override, &bracket_override,    &angle_bracket_override,
-    &n1_f01_override,          &n2_f02_override,      &n3_f03_override,     &n4_f04_override,
-    &n5_f05_override,          &n6_f06_override,      &n7_f07_override,     &n8_f08_override,
-    &n9_f09_override,          &n0_f10_override,      &ampr_f11_override,   &astr_f12_override,
+    &comma_semicolon_override, &dot_colon_override, &slsh_bslsh_override, &quest_exclm_override,
+    &n1_f01_override,          &n2_f02_override,    &n3_f03_override,     &n4_f04_override,
+    &n5_f05_override,          &n6_f06_override,    &n7_f07_override,     &n8_f08_override,
+    &n9_f09_override,          &n0_f10_override,
 };
 // === END KEY OVERRIDES ===
 
