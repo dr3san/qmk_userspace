@@ -89,13 +89,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TILD,    KC_CIRC,    KC_DLR,     KC_PERC,    KC_HASH,    KC_AMPR,        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
 	                KC_LABK,    KC_LBRC,    KC_LCBR,    KC_LPRN,    KC_EQL,         KC_PIPE,    EST_A,      EST_O_2,    EST_U,      KC_BSPC,
         KC_PLUS,    KC_RABK,    KC_RBRC,    KC_RCBR,    KC_RPRN,    KC_ASTR,        KC_GRV,     EST_O_1,    KC_AT,      XXXXXXX,    XXXXXXX,    XXXXXXX,
-                                                        MO_NUM,     KC_LSFT,        _______,    XXXXXXX
+                                                        MO_NUM,     KC_LSFT,        _______,    KC_ENT
     ),
     [_NUM] = LAYOUT_split_3x6_3(
         XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_7,       KC_8,        KC_9,       XXXXXXX,    KC_F11,
                     OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_EQL,         KC_0,       KC_4,       KC_5,        KC_6,       KC_BSPC,
         XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_1,       KC_2,        KC_3,       XXXXXXX,    KC_F12,
-                                                        _______,    XXXXXXX,        XXXXXXX,    XXXXXXX
+                                                        _______,    XXXXXXX,        XXXXXXX,    KC_ENT
     ),
 };
 // clang-format on
@@ -149,7 +149,7 @@ float scroll_accumulated = 0;
 
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     if (set_scrolling) {
-        scroll_accumulated += (float)mouse_report.y / 16.0;
+        scroll_accumulated += (float)mouse_report.y / 24.0;
         mouse_report.v = (int8_t)scroll_accumulated;
         scroll_accumulated -= (int8_t)scroll_accumulated;
 
