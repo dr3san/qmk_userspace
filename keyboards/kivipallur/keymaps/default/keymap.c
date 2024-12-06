@@ -4,12 +4,11 @@
 #include "swapper.h"
 #include "oneshot.h"
 
-#define MO_SYM MO(_SYM)
 #define MO_NAV MO(_NAV)
 #define TG_NAV TG(_NAV)
-#define MO_NUM MO(_NUM)
 #define MO_FN MO(_FN)
 #define MO_EST MO(_EST)
+#define MO_SYMNM MO(_SYMNUM)
 
 #define BACK A(KC_LEFT)
 #define FWD A(KC_RGHT)
@@ -53,11 +52,36 @@ const uint32_t unicode_map[] PROGMEM = {
 enum layers {
     _ALPHA = 0,
     _NAV,
-    _SYM,
-    _NUM,
-    _FN,
+    _SYMNUM,
     _EST,
 };
+
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_TAP,
+    TD_SINGLE_HOLD,
+    TD_DOUBLE_TAP,
+    TD_DOUBLE_HOLD
+} td_state_t;
+
+typedef struct {
+    bool is_press_action;
+    td_state_t state;
+} td_tap_t;
+
+enum {
+    TD_LYR,
+    TD_CAPS,
+};
+
+// Function associated with all tap dances
+td_state_t cur_dance(tap_dance_state_t *state);
+
+// Functions associated with individual tap dances
+void ql_finished(tap_dance_state_t *state, void *user_data);
+void ql_reset(tap_dance_state_t *state, void *user_data);
+
 
 enum keycodes {
     // Custom oneshot mod implementation with no timers.
@@ -76,60 +100,65 @@ const key_override_t comma_semicolon_override = ko_make_basic(MOD_MASK_SHIFT, KC
 const key_override_t dot_colon_override = ko_make_basic(MOD_MASK_SHIFT, KC_DOT, KC_COLN);
 const key_override_t slsh_bslsh_override = ko_make_basic(MOD_MASK_SHIFT, KC_SLSH, KC_BSLS);
 const key_override_t quest_exclm_override = ko_make_basic(MOD_MASK_SHIFT, KC_QUES, KC_EXLM);
+const key_override_t parenthesis_override = ko_make_basic(MOD_MASK_SHIFT, KC_LEFT_PAREN, KC_RIGHT_PAREN);
+const key_override_t curly_brace_override = ko_make_basic(MOD_MASK_SHIFT, KC_LEFT_CURLY_BRACE, KC_RIGHT_CURLY_BRACE);
+const key_override_t bracket_override = ko_make_basic(MOD_MASK_SHIFT, KC_LEFT_BRACKET, KC_RIGHT_BRACKET);
+const key_override_t angle_bracket_override = ko_make_basic(MOD_MASK_SHIFT, KC_LEFT_ANGLE_BRACKET, KC_RIGHT_ANGLE_BRACKET);
 
-// This globally defines all key overrides to be used
+const key_override_t n1_f01_override = ko_make_basic(MOD_MASK_SHIFT, KC_1, KC_F1);
+const key_override_t n2_f02_override = ko_make_basic(MOD_MASK_SHIFT, KC_2, KC_F2);
+const key_override_t n3_f03_override = ko_make_basic(MOD_MASK_SHIFT, KC_3, KC_F3);
+const key_override_t n4_f04_override = ko_make_basic(MOD_MASK_SHIFT, KC_4, KC_F4);
+const key_override_t n5_f05_override = ko_make_basic(MOD_MASK_SHIFT, KC_5, KC_F5);
+const key_override_t n6_f06_override = ko_make_basic(MOD_MASK_SHIFT, KC_6, KC_F6);
+const key_override_t n7_f07_override = ko_make_basic(MOD_MASK_SHIFT, KC_7, KC_F7);
+const key_override_t n8_f08_override = ko_make_basic(MOD_MASK_SHIFT, KC_8, KC_F8);
+const key_override_t n9_f09_override = ko_make_basic(MOD_MASK_SHIFT, KC_9, KC_F9);
+const key_override_t n0_f10_override = ko_make_basic(MOD_MASK_SHIFT, KC_0, KC_F10);
+const key_override_t ampr_f11_override = ko_make_basic(MOD_MASK_SHIFT, KC_AMPR, KC_F11);
+const key_override_t astr_f12_override = ko_make_basic(MOD_MASK_SHIFT, KC_ASTR, KC_F12);
+
 const key_override_t *key_overrides[] = {
 	&comma_semicolon_override,
     &dot_colon_override,
     &slsh_bslsh_override,
     &quest_exclm_override,
+    &parenthesis_override,
+    &curly_brace_override,
+    &bracket_override,
+    &angle_bracket_override,
 };
+
+// TODO layer tap ESC to _EST
+// TAP dance num layer?
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_ALPHA] = LAYOUT_split_3x6_3(
-        KC_ESC,     KC_Q,       KC_W,       KC_F,       KC_P,       KC_B,           KC_J,       KC_L,       KC_U,       KC_Y,       KC_QUOT,    KC_MINS,
+        KC_TAB,     KC_Q,       KC_W,       KC_F,       KC_P,       KC_B,           KC_J,       KC_L,       KC_U,       KC_Y,       KC_QUOT,    KC_MINS,
 	                KC_A,       KC_R,       KC_S,       KC_T,       KC_G,           KC_M,       KC_N,       KC_E,       KC_I,       KC_O,
-        KC_TAB,     KC_Z,       KC_X,       KC_C,       KC_D,       KC_V,           KC_K,       KC_H,       KC_COMM,    KC_DOT,     KC_SLSH,    KC_QUES,
-                                                        MO_NAV,     KC_LSFT,        MO_SYM,     KC_SPC
+        KC_ESC,     KC_Z,       KC_X,       KC_C,       KC_D,       KC_V,           KC_K,       KC_H,       KC_COMM,    KC_DOT,     KC_SLSH,    KC_QUES,
+                                                        TD(TD_LYR), KC_LSFT,        XXXXXXX,    KC_SPC
     ),
-
     [_NAV] = LAYOUT_split_3x6_3(
-        _______,    XXXXXXX,    PG_LEFT,    PG_RGHT,    BACK,       FWD,            KC_PGUP,    KC_HOME,    KC_UP,      KC_END,     XXXXXXX,    XXXXXXX,
-                    OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_LGUI,        KC_PGDN,    KC_LEFT,    KC_DOWN,    KC_RGHT,    KC_BSPC,
-        SAVE,       UNDO,       REDO,       CUT,        COPY,       PASTE,          SW_WIN,     MS_BTN1,    MS_BTN2,    MO_SCRL,    KC_DEL,     SAVE,
-                                                        _______,    XXXXXXX,        MO_NUM,     KC_ENT
+        XXXXXXX,    SW_WIN,     PG_LEFT,    PG_RGHT,    BACK,       FWD,            KC_PGUP,    KC_HOME,    KC_UP,      KC_END,     XXXXXXX,    XXXXXXX,
+                    OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_LGUI,        KC_DEL,     KC_LEFT,    KC_DOWN,    KC_RGHT,    KC_BSPC,
+        MO_EST,     UNDO,       REDO,       CUT,        COPY,       PASTE,          KC_PGDN,    MS_BTN1,    MS_BTN2,    MO_SCRL,    KC_DEL,     SAVE,
+                                                        _______,    XXXXXXX,        XXXXXXX,     KC_ENT
     ),
-
-    [_SYM] = LAYOUT_split_3x6_3(
-        _______,    XXXXXXX,    KC_CIRC,    KC_DLR,     KC_HASH,    KC_PERC,        KC_EQL,     XXXXXXX,    XXXXXXX,     XXXXXXX,    KC_PLUS,    XXXXXXX,
-                    KC_LABK,    KC_LBRC,    KC_LCBR,    KC_LPRN,    KC_PIPE,        XXXXXXX,    KC_GRV,     KC_BSLS,     KC_AT,      KC_BSPC,
-        _______,    KC_RABK,    KC_RBRC,    KC_RCBR,    KC_RPRN,    KC_TILD,        KC_ASTR,    KC_AMPR,    KC_EXLM,     KC_QUES,    KC_SLSH,    XXXXXXX,
-                                                        MO_NUM,     _______,        _______,    XXXXXXX
+// tekita shift overrided sulgudele ja fn layeri jaoks nritele ka (f10,11,12 lahenda 2ra)
+    [_SYMNUM] = LAYOUT_split_3x6_3(
+        KC_TILD,    KC_LABK,    KC_LBRC,    KC_LCBR,    KC_LPRN,    KC_HASH,        KC_AMPR,    KC_7,       KC_8,        KC_9,       XXXXXXX,    KC_AT,
+                    OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_EQL,         KC_0,       KC_4,       KC_5,        KC_6,       KC_BSPC,
+        XXXXXXX,    KC_CIRC,    KC_PERC,    KC_PIPE,    KC_GRV,     KC_PLUS,        KC_ASTR,    KC_1,       KC_2,        KC_3,       KC_DLR,     XXXXXXX,
+                                                        _______,    XXXXXXX,        XXXXXXX,    XXXXXXX
     ),
-
-    [_NUM] = LAYOUT_split_3x6_3(
-        _______,    KC_PSCR,    KC_MPRV,    KC_MNXT,    KC_MPLY,    KC_VOLU,        KC_EQL,     KC_7,       KC_8,        KC_9,       KC_PLUS,    XXXXXXX,
-                    OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_VOLD,        KC_0,       KC_4,       KC_5,        KC_6,       KC_BSPC,
-        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        KC_ASTR,    KC_1,       KC_2,        KC_3,       KC_SLSH,    XXXXXXX,
-                                                        _______,    _______,        XXXXXXX,    XXXXXXX
+    [_EST] = LAYOUT_split_3x6_3(
+        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
+	                XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    EST_A,      EST_O_2,    EST_U,      KC_BSPC,
+        _______,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    EST_O_1,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
+                                                        _______,    XXXXXXX,        XXXXXXX,    XXXXXXX
     ),
-
-    // [_FN] = LAYOUT_split_3x6_3(
-    //     _______,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        KC_F10,     KC_F7,      KC_F8,      KC_F9,       XXXXXXX,     XXXXXXX,
-    //     _______,    OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    XXXXXXX,        KC_F11,     KC_F4,      KC_F5,      KC_F6,       XXXXXXX,     XXXXXXX,
-    //     XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        KC_F12,     KC_F1,      KC_F2,      KC_F3,       XXXXXXX,     XXXXXXX,
-    //                 XXXXXXX,    _______,    XXXXXXX,DRAG_SCROLL    _______,    XXXXXXX,        XXXXXXX,    XXXXXXX,                             XXXXXXX
-    // ),
-
-    // [_EST] = LAYOUT_split_3x6_3(
-    //     XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
-	//     XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    EST_A,      EST_O_2,    EST_U,      KC_BSPC,    XXXXXXX,
-    //     XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    EST_O_1,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
-    //                 XXXXXXX,    XXXXXXX,    XXXXXXX,    _______,    XXXXXXX,        XXXXXXX,    XXXXXXX,                            XXXXXXX
-    // ),
-
-
 };
 // clang-format on
 
@@ -145,9 +174,7 @@ bool is_oneshot_cancel_key(uint16_t keycode) {
 
 bool is_oneshot_ignored_key(uint16_t keycode) {
     switch (keycode) {
-        case MO_SYM:
         case MO_NAV:
-        case MO_NUM:
         case OS_GUI:
         case OS_ALT:
         case OS_SHFT:
@@ -183,10 +210,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-
 report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     if (set_scrolling) {
-        mouse_report.h = mouse_report.x;
+        mouse_report.h = 0;
         mouse_report.v = mouse_report.y;
         mouse_report.x = 0;
         mouse_report.y = 0;
@@ -194,3 +220,61 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     return mouse_report;
 }
 
+// Determine the current tap dance state
+td_state_t cur_dance(tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (!state->pressed) return TD_SINGLE_TAP;
+        else return TD_SINGLE_HOLD;
+    } else if (state->count == 2) {
+        if (!state->pressed) return TD_DOUBLE_TAP;
+        else return TD_DOUBLE_HOLD;
+    }
+    else return TD_UNKNOWN;
+}
+
+// Initialize tap structure associated with example tap dance key
+static td_tap_t ql_tap_state = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+
+// Functions that control what our tap dance key does
+void ql_finished(tap_dance_state_t *state, void *user_data) {
+    ql_tap_state.state = cur_dance(state);
+    switch (ql_tap_state.state) {
+        case TD_SINGLE_HOLD:
+            layer_on(_NAV);
+            break;
+        case TD_DOUBLE_HOLD:
+            layer_on(_SYMNUM);
+            break;
+        default:
+            break;
+    }
+}
+
+void ql_reset(tap_dance_state_t *state, void *user_data) {
+    // If the key was held down and now is released then switch off the layer
+    if (ql_tap_state.state == TD_SINGLE_HOLD) {
+        layer_off(_NAV);
+    }
+    if (ql_tap_state.state == TD_DOUBLE_HOLD) {
+        layer_off(_SYMNUM);
+    }
+    ql_tap_state.state = TD_NONE;
+}
+
+// Associate our tap dance key with its functionality
+tap_dance_action_t tap_dance_actions[] = {
+    [TD_LYR] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, ql_finished, ql_reset)
+};
+
+// Set a long-ish tapping term for tap-dance keys
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case QK_TAP_DANCE ... QK_TAP_DANCE_MAX:
+            return 275;
+        default:
+            return TAPPING_TERM;
+    }
+}

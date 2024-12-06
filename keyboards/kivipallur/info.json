@@ -3,17 +3,8 @@
     "maintainer": "dr3san",
     "manufacturer": "dr3san",
     "url": "https://github.com/dr3san/Kivipallur",
-    "bootloader": "rp2040",
     "development_board": "helios",
-    "features": {
-        "bootmagic": false,
-        "command": false,
-        "console": false,
-        "extrakey": true,
-        "mousekey": true,
-        "nkro": true
-    },
-    "processor": "RP2040",
+    "bootloader": "rp2040",
     "usb": {
         "device_version": "1.0.0",
         "pid": "0x0000",
@@ -41,7 +32,8 @@
             }
         },
         "serial": {
-            "driver": "vendor"
+            "driver": "vendor",
+            "pin": "GP0"
         }
     },
     "layouts": {
