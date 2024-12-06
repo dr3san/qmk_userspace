@@ -1,5 +1,6 @@
 SRC += swapper.c
 SRC += oneshot.c
+SRC += maccel.c
 
 POINTING_DEVICE_ENABLE = yes
 POINTING_DEVICE_DRIVER = pmw3360

@@ -14,8 +14,14 @@
 #define POINTING_DEVICE_ROTATION_90
 #define POINTING_DEVICE_INVERT_X
 #define PMW33XX_CS_PIN GP21
-#define PMW33XX_CPI 400
+#define PMW33XX_CPI 1000
 #define SPLIT_POINTING_ENABLE
+
+#define MOUSE_EXTENDED_REPORT
+#define MACCEL_TAKEOFF 2.0      // lower/higher value = curve takes off more smoothly/abruptly
+#define MACCEL_GROWTH_RATE 0.25 // lower/higher value = curve reaches its upper limit slower/faster
+#define MACCEL_OFFSET 2.2       // lower/higher value = acceleration kicks in earlier/later
+#define MACCEL_LIMIT 0.2        // lower limit of accel curve (minimum acceleration factor)
 
 #define SPLIT_USB_DETECT
 
