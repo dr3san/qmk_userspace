@@ -127,6 +127,18 @@ const key_override_t *key_overrides[] = {
     &curly_brace_override,
     &bracket_override,
     &angle_bracket_override,
+    n1_f01_override,
+    n2_f02_override,
+    n3_f03_override,
+    n4_f04_override,
+    n5_f05_override,
+    n6_f06_override,
+    n7_f07_override,
+    n8_f08_override,
+    n9_f09_override,
+    n0_f10_override,
+    ampr_f11_override,
+    astr_f12_override,
 };
 
 // TODO layer tap ESC to _EST
