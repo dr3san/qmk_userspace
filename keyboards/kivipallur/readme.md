@@ -4,11 +4,12 @@
 
 *A short description of the keyboard/project*
 Kivipallur is a 38-key split ergo keyboard with a 25 mm thumb trackball.
-It is a fusion of Keyball, KLOR and TOTEM.
+It uses Kailh Choc V1 switches.
+The design of Kivipallur was inspired by Keyball, KLOR and TOTEM keyboards.
 
 * Keyboard Maintainer: [Andres Sakk](https://github.com/dr3san)
-* Hardware Supported: Since the keyboard is diodeless, it only supports the 0xCB Helios. Not pro-micro compatible.
-* Hardware Availability: *Links to where you can find this hardware*
+* Hardware Supported: Since the keyboard is diodeless and therefore requires a specific amount of pins, it only supports the 0xCB Helios. Not pro-micro compatible.
+* Hardware Availability: [KeebSupply](https://keeb.supply/) sells the Helios
 
 Make example for this keyboard (after setting up your build environment):
 
@@ -22,8 +23,4 @@ See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_to
 
 ## Bootloader
 
-Enter the bootloader in 3 ways:
-
-* **Bootmagic reset**: Hold down the key at (0,0) in the matrix (usually the top left key or Escape) and plug in the keyboard
-* **Physical reset button**: Briefly press the button on the back of the PCB - some may have pads you must short instead
-* **Keycode in layout**: Press the key mapped to `QK_BOOT` if it is available
+* **Physical reset button**: Press the button on the Helios PCB for 1 second - some may have pads you must short instead
