@@ -30,6 +30,21 @@ enum layers {
 
 bool set_scrolling = false;
 
+oneshot_state os_shft_state = os_up_unqueued;
+oneshot_state os_ctrl_state = os_up_unqueued;
+oneshot_state os_alt_state  = os_up_unqueued;
+oneshot_state os_gui_state  = os_up_unqueued;
+
+enum keycodes {
+    // Custom oneshot mod implementation with no timers.
+    OS_SHFT = SAFE_RANGE,
+    OS_CTRL,
+    OS_ALT,
+    OS_GUI,
+    SW_WIN,  // Switch to next window         (alt-tab)
+    MO_SCRL, // Toggle drag scrolling
+};
+
 // === BEGIN UNICODE ===
 #define EST_O_1 UP(EST_O_1_LOWER, EST_O_1_UPPER) // o with tilde (õ)
 #define EST_A UP(EST_A_LOWER, EST_A_UPPER)       // a with diaeresis (ä)
@@ -54,21 +69,6 @@ const uint32_t unicode_map[] PROGMEM = {
 };
 // === END UNICODE ===
 
-oneshot_state os_shft_state = os_up_unqueued;
-oneshot_state os_ctrl_state = os_up_unqueued;
-oneshot_state os_alt_state  = os_up_unqueued;
-oneshot_state os_gui_state  = os_up_unqueued;
-
-enum keycodes {
-    // Custom oneshot mod implementation with no timers.
-    OS_SHFT = SAFE_RANGE,
-    OS_CTRL,
-    OS_ALT,
-    OS_GUI,
-    SW_WIN,  // Switch to next window         (alt-tab)
-    MO_SCRL, // Toggle drag scrolling
-};
-
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_ALPHA] = LAYOUT_split_3x6_3(
@@ -78,22 +78,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                         MO_NAV,     KC_LSFT,        MO_SYM,     KC_SPC
     ),
     [_NAV] = LAYOUT_split_3x6_3(
-        XXXXXXX,    XXXXXXX,    PG_LEFT,    PG_RGHT,    BACK,       FWD,            KC_PGUP,    KC_HOME,    KC_UP,      KC_END,     XXXXXXX,    XXXXXXX,
+        KC_TAB,     XXXXXXX,    PG_LEFT,    PG_RGHT,    BACK,       FWD,            KC_PGUP,    KC_HOME,    KC_UP,      KC_END,     XXXXXXX,    XXXXXXX,
                     OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_LGUI,        KC_PGDN,    KC_LEFT,    KC_DOWN,    KC_RGHT,    KC_BSPC,
         SAVE,       UNDO,       REDO,       CUT,        COPY,       PASTE,          SW_WIN,     MS_BTN1,    MS_BTN2,    MO_SCRL,    KC_DEL,     XXXXXXX,
-                                                        _______,    XXXXXXX,        XXXXXXX,    KC_ENT
+                                                        _______,    XXXXXXX,        MO_NUM,     KC_ENT
     ),
     [_SYM] = LAYOUT_split_3x6_3(
         KC_TILD,    KC_CIRC,    KC_DLR,     KC_PERC,    KC_HASH,    KC_AMPR,        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
 	                KC_LABK,    KC_LBRC,    KC_LCBR,    KC_LPRN,    KC_EQL,         KC_PIPE,    EST_A,      EST_O_2,    EST_U,      KC_BSPC,
         KC_PLUS,    KC_RABK,    KC_RBRC,    KC_RCBR,    KC_RPRN,    KC_ASTR,        KC_GRV,     EST_O_1,    KC_AT,      XXXXXXX,    XXXXXXX,    XXXXXXX,
-                                                        MO_NUM,     KC_LSFT,        _______,    KC_ENT
+                                                        XXXXXXX,    KC_LSFT,        _______,    KC_ENT
     ),
     [_NUM] = LAYOUT_split_3x6_3(
         XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_7,       KC_8,        KC_9,       XXXXXXX,    KC_F11,
                     OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_EQL,         KC_0,       KC_4,       KC_5,        KC_6,       KC_BSPC,
         XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_1,       KC_2,        KC_3,       XXXXXXX,    KC_F12,
-                                                        _______,    XXXXXXX,        XXXXXXX,    KC_ENT
+                                                        XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_ENT
     ),
 };
 // clang-format on
