@@ -4,9 +4,8 @@
 #include "maccel.h"
 
 // === BEGIN KEYMAP MACROS ===
-#define MO_NAV MO(_NAV)
-#define MO_SYM MO(_SYM)
-#define MO_NUM MO(_NUM)
+#define MO_NAV TL_LOWR
+#define MO_SYM TL_UPPR
 
 #define BACK A(KC_LEFT)
 #define FWD A(KC_RGHT)
@@ -81,19 +80,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,     XXXXXXX,    PG_LEFT,    PG_RGHT,    BACK,       FWD,            KC_PGUP,    KC_HOME,    KC_UP,      KC_END,     XXXXXXX,    XXXXXXX,
                     OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_LGUI,        KC_PGDN,    KC_LEFT,    KC_DOWN,    KC_RGHT,    KC_BSPC,
         SAVE,       UNDO,       REDO,       CUT,        COPY,       PASTE,          SW_WIN,     MS_BTN1,    MS_BTN2,    MO_SCRL,    KC_DEL,     XXXXXXX,
-                                                        _______,    XXXXXXX,        MO_NUM,     KC_ENT
+                                                        _______,    XXXXXXX,        _______,     KC_ENT
     ),
     [_SYM] = LAYOUT_split_3x6_3(
         KC_TILD,    KC_CIRC,    KC_DLR,     KC_PERC,    KC_HASH,    KC_AMPR,        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
 	                KC_LABK,    KC_LBRC,    KC_LCBR,    KC_LPRN,    KC_EQL,         KC_PIPE,    EST_A,      EST_O_2,    EST_U,      KC_BSPC,
         KC_PLUS,    KC_RABK,    KC_RBRC,    KC_RCBR,    KC_RPRN,    KC_ASTR,        KC_GRV,     EST_O_1,    KC_AT,      XXXXXXX,    XXXXXXX,    XXXXXXX,
-                                                        XXXXXXX,    KC_LSFT,        _______,    KC_ENT
+                                                        _______,    KC_LSFT,        _______,    XXXXXXX
     ),
     [_NUM] = LAYOUT_split_3x6_3(
         XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_7,       KC_8,        KC_9,       XXXXXXX,    KC_F11,
                     OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_EQL,         KC_0,       KC_4,       KC_5,        KC_6,       KC_BSPC,
         XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_1,       KC_2,        KC_3,       XXXXXXX,    KC_F12,
-                                                        XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_ENT
+                                                        _______,    XXXXXXX,        _______,    XXXXXXX
     ),
 };
 // clang-format on
@@ -119,7 +118,6 @@ bool is_oneshot_ignored_key(uint16_t keycode) {
         case OS_CTRL:
         case MO_NAV:
         case MO_SYM:
-        case MO_NUM:
             return true;
         default:
             return false;
