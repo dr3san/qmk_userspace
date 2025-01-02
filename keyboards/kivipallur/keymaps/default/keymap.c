@@ -74,13 +74,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,     KC_Q,       KC_W,       KC_F,       KC_P,       KC_B,           KC_J,       KC_L,       KC_U,       KC_Y,       KC_QUOT,    KC_MINS,
 	                KC_A,       KC_R,       KC_S,       KC_T,       KC_G,           KC_M,       KC_N,       KC_E,       KC_I,       KC_O,
         KC_ESC,     KC_Z,       KC_X,       KC_C,       KC_D,       KC_V,           KC_K,       KC_H,       KC_COMM,    KC_DOT,     KC_SLSH,    KC_QUES,
-                                                        MO_NAV,     KC_LSFT,        MO_SYM,     KC_SPC
+                                                        TL_LOWR,     KC_LSFT,       TL_UPPR,     KC_SPC
     ),
     [_NAV] = LAYOUT_split_3x6_3(
         KC_TAB,     XXXXXXX,    PG_LEFT,    PG_RGHT,    BACK,       FWD,            KC_PGUP,    KC_HOME,    KC_UP,      KC_END,     XXXXXXX,    XXXXXXX,
                     OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_LGUI,        KC_PGDN,    KC_LEFT,    KC_DOWN,    KC_RGHT,    KC_BSPC,
         SAVE,       UNDO,       REDO,       CUT,        COPY,       PASTE,          SW_WIN,     MS_BTN1,    MS_BTN2,    MO_SCRL,    KC_DEL,     XXXXXXX,
-                                                        _______,    XXXXXXX,        _______,     KC_ENT
+                                                        _______,    XXXXXXX,        _______,    KC_ENT
     ),
     [_SYM] = LAYOUT_split_3x6_3(
         KC_TILD,    KC_CIRC,    KC_DLR,     KC_PERC,    KC_HASH,    KC_AMPR,        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
