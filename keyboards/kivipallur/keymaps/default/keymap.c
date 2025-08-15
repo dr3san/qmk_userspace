@@ -1,11 +1,12 @@
 #include QMK_KEYBOARD_H
+#include "config.h"
 #include "swapper.h"
 #include "oneshot.h"
 #include "maccel.h"
 
 // === BEGIN KEYMAP MACROS ===
-#define MO_NAV TL_LOWR
-#define MO_SYM TL_UPPR
+#define MO_NAV QK_TRI_LAYER_LOWER
+#define MO_SYM QK_TRI_LAYER_UPPER
 
 #define BACK A(KC_LEFT)
 #define FWD A(KC_RGHT)
@@ -72,9 +73,9 @@ const uint32_t unicode_map[] PROGMEM = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_ALPHA] = LAYOUT_split_3x6_3(
         KC_TAB,     KC_Q,       KC_W,       KC_F,       KC_P,       KC_B,           KC_J,       KC_L,       KC_U,       KC_Y,       KC_QUOT,    KC_MINS,
-	                KC_A,       KC_R,       KC_S,       KC_T,       KC_G,           KC_M,       KC_N,       KC_E,       KC_I,       KC_O,
+                    KC_A,       KC_R,       KC_S,       KC_T,       KC_G,           KC_M,       KC_N,       KC_E,       KC_I,       KC_O,
         KC_ESC,     KC_Z,       KC_X,       KC_C,       KC_D,       KC_V,           KC_K,       KC_H,       KC_COMM,    KC_DOT,     KC_SLSH,    KC_QUES,
-                                                        TL_LOWR,     KC_LSFT,       TL_UPPR,     KC_SPC
+                                                        MO_NAV,     KC_LSFT,        MO_SYM,     KC_SPC
     ),
     [_NAV] = LAYOUT_split_3x6_3(
         KC_TAB,     XXXXXXX,    PG_LEFT,    PG_RGHT,    BACK,       FWD,            KC_PGUP,    KC_HOME,    KC_UP,      KC_END,     XXXXXXX,    XXXXXXX,
@@ -84,13 +85,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [_SYM] = LAYOUT_split_3x6_3(
         KC_TILD,    KC_CIRC,    KC_DLR,     KC_PERC,    KC_HASH,    KC_AMPR,        XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,
-	                KC_LABK,    KC_LBRC,    KC_LCBR,    KC_LPRN,    KC_EQL,         KC_PIPE,    EST_A,      EST_O_2,    EST_U,      KC_BSPC,
+                    KC_LABK,    KC_LBRC,    KC_LCBR,    KC_LPRN,    KC_EQL,         KC_PIPE,    EST_A,      EST_O_2,    EST_U,      KC_BSPC,
         KC_PLUS,    KC_RABK,    KC_RBRC,    KC_RCBR,    KC_RPRN,    KC_ASTR,        KC_GRV,     EST_O_1,    KC_AT,      XXXXXXX,    XXXXXXX,    XXXXXXX,
                                                         _______,    KC_LSFT,        _______,    XXXXXXX
     ),
     [_NUM] = LAYOUT_split_3x6_3(
         XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_7,       KC_8,        KC_9,       XXXXXXX,    KC_F11,
-                    OS_GUI,     OS_ALT,     OS_SHFT,    OS_CTRL,    KC_EQL,         KC_0,       KC_4,       KC_5,        KC_6,       KC_BSPC,
+                    KC_LGUI,    KC_LALT,    KC_LSFT,    KC_LCTL,    KC_EQL,         KC_0,       KC_4,       KC_5,        KC_6,       KC_BSPC,
         XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,    XXXXXXX,        XXXXXXX,    KC_1,       KC_2,        KC_3,       XXXXXXX,    KC_F12,
                                                         _______,    XXXXXXX,        _______,    XXXXXXX
     ),
