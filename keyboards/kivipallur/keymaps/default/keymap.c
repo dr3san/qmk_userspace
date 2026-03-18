@@ -2,7 +2,6 @@
 #include "config.h"
 #include "swapper.h"
 #include "oneshot.h"
-#include "maccel.h"
 
 // === BEGIN KEYMAP MACROS ===
 #define MO_NAV QK_TRI_LAYER_LOWER
@@ -154,7 +153,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
         mouse_report.x = 0;
         mouse_report.y = 0;
     }
-    return pointing_device_task_maccel(mouse_report);
+    return mouse_report;
 }
 // === END MOUSE ===
 
